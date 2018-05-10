@@ -1,0 +1,11 @@
+[package]
+name = "roguetima"
+version = "0.0.0"
+authors = ["Samuel"]
+build = "build.rs"
+
+[dependencies]
+ggez = "0.4.2"
+specs = "0.10.0"
+rand = "0.4.2"
+noise = "0.5.1"

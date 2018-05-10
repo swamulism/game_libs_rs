@@ -1,2 +1,1 @@
-# roguetima
-ggez rust game
+# Roguetima
