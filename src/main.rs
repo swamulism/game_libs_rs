@@ -8,11 +8,9 @@ extern crate specs;
 mod ecs;
 mod game;
 
-use ecs::components::{Position, Velocity};
-use ecs::updatepos::UpdatePos;
-use game::{MainState, Systems};
+use game::MainState;
 use ggez::event;
-use specs::World;
+use std::{env, path};
 
 pub fn main() {
     let ctx = &mut ggez::ContextBuilder::new("game", "ggez")
@@ -20,27 +18,36 @@ pub fn main() {
         .build()
         .expect("Failed to build ggez context");
 
-    let mut world = World::new();
-    world.register::<Position>();
-    world.register::<Velocity>();
+    if let Ok(manifest_dir) = env::var("CARGO_MANIFEST_DIR") {
+        let mut path = path::PathBuf::from(manifest_dir);
+        path.push("assets");
+        ctx.filesystem.mount(&path, true);
+    }
 
-    world
-        .create_entity()
-        .with(Position { x: 4.0, y: 7.0 })
-        .build();
-
-    world
-        .create_entity()
-        .with(Position { x: 0.0, y: 380.0 })
-        .with(Velocity { x: 5.0, y: 0.1 })
-        .build();
-
-    let systems = Systems {
-        update_pos: UpdatePos,
-    };
-    let state = &mut MainState::new(ctx, world, systems).unwrap();
+    let state = &mut MainState::new(ctx).unwrap();
 
     if let Err(e) = event::run(ctx, state) {
         println!("Error encountered: {}", e);
     }
 }
+
+// let mut image2_nearest = graphics::Image::new(ctx, "/shot.png")?;
+// image2_nearest.set_filter(graphics::FilterMode::Nearest);
+// graphics::draw_ex(
+//     ctx,
+//     &self.image2_nearest,
+//     graphics::DrawParam {
+//         dest: Point2::new(10.0, 10.0),
+//         ..Default::default()
+//     },
+// )?;
+
+// struct EnemySpawner;
+
+// impl<'a> System<'a> for EnemySpawner {
+//     type SystemData = Entities<'a>;
+
+//     fn run(&mut self, entities: Entities<'a>) {
+//         let enemy = entities.create();
+//     }
+// }

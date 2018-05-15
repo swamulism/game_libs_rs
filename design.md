@@ -1,5 +1,14 @@
 # Roguetima
 
+## TODO
+- player
+- controls
+- world (floor tiles, things above e.g. trees walls stations?)
+- collision (collision, hitbox, hurtbox, inventory pickup)
+- gameplay (also put shadows under things)
+- make resource for art
+- art :( 
+
 ## Overview 
 
 ### Main Concept
@@ -12,9 +21,11 @@
 ???
 
 ### Art Style
-16x16 pixel art. ENDESGA 32 or DawnBringer 32 Palette. <- should graphics size be static or dynamic?
+16x16 pixel art. ENDESGA 32 or DawnBringer 32 Palette.
 
-Or (kingdom rush / dungelot) esq graphics
+Tiles and items are 16x16
+
+Creatures are dynamic size
 
 
 ## Mechanics
