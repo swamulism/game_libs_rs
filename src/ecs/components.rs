@@ -20,6 +20,18 @@ impl Component for Velocity {
     type Storage = VecStorage<Self>;
 }
 
+// #[derive(Debug)]
+// pub struct Collision {
+//     pub x0: f32,
+//     pub y0: f32,
+//     pub x1: f32,
+//     pub x2: f32,
+// }
+
+// impl Component for Collision {
+//     type Storage = VecStorage<Self>;
+// }
+
 // use ggez::graphics;
 
 // #[derive(Debug)]

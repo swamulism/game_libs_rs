@@ -2,10 +2,8 @@ use ecs::components::{Position, Velocity};
 use ecs::updatepos::UpdatePos;
 use ggez::graphics::{DrawMode, Point2};
 use ggez::{event, graphics, timer, Context, GameResult};
+use ggez::event::{Mod, Keycode};
 use specs::{Dispatcher, DispatcherBuilder, World};
-// pub struct Systems {
-//     pub update_pos: UpdatePos,
-// }
 
 pub struct MainState<'a, 'b> {
     world: World,
@@ -32,6 +30,7 @@ impl<'a, 'b> MainState<'a, 'b> {
         // let systems = Systems {
         //     update_pos: UpdatePos,
         // };
+        world.add_resource(PlayerInput::new());
 
         let dispatcher = DispatcherBuilder::new()
             .with(UpdatePos, "update_pos", &[])
@@ -62,5 +61,51 @@ impl<'a, 'b> event::EventHandler for MainState<'a, 'b> {
         }
         graphics::present(ctx);
         Ok(())
+    }
+
+    fn key_down_event(&mut self, _ctx: &mut Context, keycode: Keycode, _keymod: Mod, repeat: bool) {
+        let mut input = self.world.write_resource::<PlayerInput>();
+
+        if !repeat {
+            match keycode {
+                Keycode::Left => input.left = true,
+                Keycode::Right => input.right = true,
+                Keycode::Up => input.up = true,
+                Keycode::Down => input.down = true,
+                _ => (),
+            }
+        }
+    }
+
+    fn key_up_event(&mut self, _ctx: &mut Context, keycode: Keycode, _keymod: Mod, repeat: bool) {
+        let mut input = self.world.write_resource::<PlayerInput>();
+        if !repeat {
+            //wat?
+            match keycode {
+                Keycode::Left => input.left = false,
+                Keycode::Right => input.right = false,
+                Keycode::Up => input.up = false,
+                Keycode::Down => input.down = false,
+                _ => (),
+            }
+        }
+    }
+}
+
+pub struct PlayerInput {
+    pub up: bool,
+    pub down: bool,
+    pub left: bool,
+    pub right: bool,
+}
+
+impl PlayerInput {
+    pub fn new() -> PlayerInput {
+        PlayerInput {
+            up: false,
+            down: false,
+            left: false,
+            right: false,
+        }
     }
 }
