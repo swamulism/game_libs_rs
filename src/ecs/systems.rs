@@ -39,23 +39,18 @@ impl<'a> System<'a> for Control {
         for (vel, _) in (&mut vel, &con).join() {
             if inp.up {
                 vel.y = -5.0;
-            }
-            else if inp.down {
+            } else if inp.down {
                 vel.y = 5.0;
-            }
-            else {
+            } else {
                 vel.y = 0.0;
             }
             if inp.left {
                 vel.x = -5.0;
-            }
-            else if inp.right {
+            } else if inp.right {
                 vel.x = 5.0;
-            }
-            else {
+            } else {
                 vel.x = 0.0;
             }
-
         }
     }
 }
