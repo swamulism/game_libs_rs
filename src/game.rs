@@ -1,8 +1,9 @@
-use ecs::components::{Position, Velocity};
-use ecs::updatepos::UpdatePos;
+use ecs::components::*;
+use ecs::resources::*;
+use ecs::systems::*;
+use ggez::event::{Keycode, Mod};
 use ggez::graphics::{DrawMode, Point2};
 use ggez::{event, graphics, timer, Context, GameResult};
-use ggez::event::{Mod, Keycode};
 use specs::{Dispatcher, DispatcherBuilder, World};
 
 pub struct MainState<'a, 'b> {
@@ -15,24 +16,18 @@ impl<'a, 'b> MainState<'a, 'b> {
         let mut world = World::new();
         world.register::<Position>();
         world.register::<Velocity>();
-
-        world
-            .create_entity()
-            .with(Position { x: 4.0, y: 7.0 })
-            .build();
-
-        world
-            .create_entity()
-            .with(Position { x: 0.0, y: 380.0 })
-            .with(Velocity { x: 5.0, y: 0.1 })
-            .build();
-
-        // let systems = Systems {
-        //     update_pos: UpdatePos,
-        // };
+        world.register::<Controlled>();
         world.add_resource(PlayerInput::new());
 
+        world
+            .create_entity()
+            .with(Position { x: 0.0, y: 0.0 })
+            .with(Velocity { x: 0.0, y: 0.0 })
+            .with(Controlled)
+            .build();
+
         let dispatcher = DispatcherBuilder::new()
+            .with(Control, "control", &[])
             .with(UpdatePos, "update_pos", &[])
             .build();
         let s = Self { world, dispatcher };
@@ -63,15 +58,18 @@ impl<'a, 'b> event::EventHandler for MainState<'a, 'b> {
         Ok(())
     }
 
-    fn key_down_event(&mut self, _ctx: &mut Context, keycode: Keycode, _keymod: Mod, repeat: bool) {
+    fn key_down_event(&mut self, ctx: &mut Context, keycode: Keycode, _keymod: Mod, repeat: bool) {
         let mut input = self.world.write_resource::<PlayerInput>();
 
         if !repeat {
             match keycode {
-                Keycode::Left => input.left = true,
-                Keycode::Right => input.right = true,
-                Keycode::Up => input.up = true,
-                Keycode::Down => input.down = true,
+                Keycode::A => input.left = true,
+                Keycode::D => input.right = true,
+                Keycode::W => input.up = true,
+                Keycode::S => input.down = true,
+                Keycode::Escape => {
+                    ctx.quit().expect("wat");
+                }
                 _ => (),
             }
         }
@@ -80,32 +78,13 @@ impl<'a, 'b> event::EventHandler for MainState<'a, 'b> {
     fn key_up_event(&mut self, _ctx: &mut Context, keycode: Keycode, _keymod: Mod, repeat: bool) {
         let mut input = self.world.write_resource::<PlayerInput>();
         if !repeat {
-            //wat?
             match keycode {
-                Keycode::Left => input.left = false,
-                Keycode::Right => input.right = false,
-                Keycode::Up => input.up = false,
-                Keycode::Down => input.down = false,
+                Keycode::A => input.left = false,
+                Keycode::D => input.right = false,
+                Keycode::W => input.up = false,
+                Keycode::S => input.down = false,
                 _ => (),
             }
-        }
-    }
-}
-
-pub struct PlayerInput {
-    pub up: bool,
-    pub down: bool,
-    pub left: bool,
-    pub right: bool,
-}
-
-impl PlayerInput {
-    pub fn new() -> PlayerInput {
-        PlayerInput {
-            up: false,
-            down: false,
-            left: false,
-            right: false,
         }
     }
 }

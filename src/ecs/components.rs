@@ -1,4 +1,4 @@
-use specs::{Component, VecStorage};
+use specs::{Component, NullStorage, VecStorage};
 
 #[derive(Debug)]
 pub struct Position {
@@ -18,6 +18,13 @@ pub struct Velocity {
 
 impl Component for Velocity {
     type Storage = VecStorage<Self>;
+}
+
+#[derive(Debug, Default)]
+pub struct Controlled;
+
+impl Component for Controlled {
+    type Storage = NullStorage<Self>;
 }
 
 // #[derive(Debug)]
