@@ -41,14 +41,14 @@ impl Component for Controlled {
 
 // use ggez::graphics;
 
-// #[derive(Debug)]
-// pub struct Sprite {
-//     image: graphics::Image,
-//     sprite_index: i32,
-//     frames_since_last_draw: i32,
-//     animation_rate: i32,
-// }
+#[derive(Debug)]
+pub struct Sprite {
+    image_name: String,
+    sprite_index: i32,
+    frames_since_last_draw: i32,
+    animation_rate: i32,
+}
 
-// impl Component for Sprite {
-//     type Storage = VecStorage<Self>;
-// }
+impl Component for Sprite {
+    type Storage = VecStorage<Self>;
+}

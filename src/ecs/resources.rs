@@ -1,3 +1,6 @@
+use std::collections::HashMap;
+use ggez::graphics::Image;
+
 #[derive(Default)]
 pub struct PlayerInput {
     pub up: bool,
@@ -7,12 +10,25 @@ pub struct PlayerInput {
 }
 
 impl PlayerInput {
-    pub fn new() -> PlayerInput {
-        PlayerInput {
+    pub fn new() -> Self {
+        Self {
             up: false,
             down: false,
             left: false,
             right: false,
+        }
+    }
+}
+
+// #[derive(Default)]
+pub struct Sprites {
+    pub images: HashMap<String, Image>,
+}
+
+impl Sprites {
+    pub fn new(images: HashMap<String, Image>) -> Self {
+        Self {
+            images
         }
     }
 }

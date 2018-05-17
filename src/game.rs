@@ -5,6 +5,7 @@ use ggez::event::{Keycode, Mod};
 use ggez::graphics::{DrawMode, Point2};
 use ggez::{event, graphics, timer, Context, GameResult};
 use specs::{Dispatcher, DispatcherBuilder, World};
+use std::collections::HashMap;
 
 pub struct MainState<'a, 'b> {
     world: World,
@@ -12,12 +13,15 @@ pub struct MainState<'a, 'b> {
 }
 
 impl<'a, 'b> MainState<'a, 'b> {
-    pub fn new(_ctx: &mut Context) -> GameResult<Self> {
+    pub fn new(ctx: &mut Context) -> GameResult<Self> {
         let mut world = World::new();
+        let imgs = get_images(ctx);
         world.register::<Position>();
         world.register::<Velocity>();
         world.register::<Controlled>();
+        world.register::<Sprite>();
         world.add_resource(PlayerInput::new());
+        world.add_resource(Sprites::new(imgs));
 
         world
             .create_entity()
@@ -87,4 +91,12 @@ impl<'a, 'b> event::EventHandler for MainState<'a, 'b> {
             }
         }
     }
+}
+
+fn get_images(ctx: &mut Context) -> HashMap<String, graphics::Image> {
+    let mut imgs = HashMap::new();
+    let img_name = "Template";
+    let img = graphics::Image::new(ctx, img_name).expect(&format!("{}, Not found", img_name));
+    imgs.insert(img_name.to_string(), img);
+    return imgs;
 }

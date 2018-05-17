@@ -29,14 +29,14 @@ impl<'a> System<'a> for UpdatePos {
 pub struct Control;
 impl<'a> System<'a> for Control {
     type SystemData = (
-        WriteStorage<'a, Velocity>,
         ReadStorage<'a, Controlled>,
+        WriteStorage<'a, Velocity>,
         Read<'a, PlayerInput>,
     );
 
-    fn run(&mut self, (mut vel, con, inp): Self::SystemData) {
+    fn run(&mut self, (con, mut vel, inp): Self::SystemData) {
         use specs::Join;
-        for (vel, _) in (&mut vel, &con).join() {
+        for (_ ,vel) in (&con, &mut vel).join() {
             if inp.up {
                 vel.y = -5.0;
             } else if inp.down {
