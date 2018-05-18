@@ -2,7 +2,6 @@ use ecs::components::*;
 use ecs::resources::*;
 use ecs::systems::*;
 use ggez::event::{Keycode, Mod};
-use ggez::graphics::{DrawMode, Point2};
 use ggez::{event, graphics, timer, Context, GameResult};
 use specs::{Dispatcher, DispatcherBuilder, World};
 use std::collections::HashMap;
@@ -44,6 +43,9 @@ impl<'a, 'b> MainState<'a, 'b> {
 impl<'a, 'b> event::EventHandler for MainState<'a, 'b> {
     fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
         const DESIRED_UPS: u32 = 60;
+        // if timer::get_ticks(ctx) % 10000 == 0 {
+        //     println!("FPS: {}", timer::get_fps(ctx));
+        // }
 
         while timer::check_update_time(ctx, DESIRED_UPS) {
             self.dispatcher.dispatch(&mut self.world.res);
@@ -66,7 +68,6 @@ impl<'a, 'b> event::EventHandler for MainState<'a, 'b> {
         let mut thing = self.world.write_resource::<ToBeDrawn>();
         thing.draw(ctx);
         thing.clear();
-        // world.to
         graphics::present(ctx);
         Ok(())
     }
@@ -106,6 +107,5 @@ fn get_images(ctx: &mut Context) -> HashMap<String, graphics::Image> {
     let img_name = "/Template.png";
     let img = graphics::Image::new(ctx, img_name).expect(&format!("{}, Not found", img_name));
     imgs.insert(img_name.to_string(), img);
-    // println!("{:?}", imgs);
     return imgs;
 }
