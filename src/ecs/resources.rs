@@ -1,5 +1,7 @@
+use ggez::Context;
+
+use ggez::graphics::{draw_ex, DrawParam, Image, Point2};
 use std::collections::HashMap;
-use ggez::graphics::Image;
 
 #[derive(Default)]
 pub struct PlayerInput {
@@ -20,15 +22,39 @@ impl PlayerInput {
     }
 }
 
-// #[derive(Default)]
+#[derive(Default)]
 pub struct Sprites {
     pub images: HashMap<String, Image>,
 }
 
 impl Sprites {
     pub fn new(images: HashMap<String, Image>) -> Self {
-        Self {
-            images
+        Self { images }
+    }
+}
+
+#[derive(Default)]
+pub struct ToBeDrawn {
+    pub images: Vec<(Image, f32, f32)>,
+}
+
+impl ToBeDrawn {
+    pub fn new() -> Self {
+        Self { images: vec![] }
+    }
+    pub fn draw(&self, ctx: &mut Context) {
+        for (img, x, y) in &self.images {
+            draw_ex(
+                ctx,
+                img,
+                DrawParam {
+                    dest: Point2::new(*x, *y),
+                    ..Default::default()
+                },
+            ).expect("error with drawing");
         }
+    }
+    pub fn clear(&mut self) {
+        self.images = vec![];
     }
 }

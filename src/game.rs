@@ -22,12 +22,14 @@ impl<'a, 'b> MainState<'a, 'b> {
         world.register::<Sprite>();
         world.add_resource(PlayerInput::new());
         world.add_resource(Sprites::new(imgs));
+        world.add_resource(ToBeDrawn::new());
 
         world
             .create_entity()
             .with(Position { x: 0.0, y: 0.0 })
             .with(Velocity { x: 0.0, y: 0.0 })
             .with(Controlled)
+            .with(Sprite::new("/Template.png".to_string()))
             .build();
 
         let dispatcher = DispatcherBuilder::new()
@@ -50,21 +52,27 @@ impl<'a, 'b> event::EventHandler for MainState<'a, 'b> {
     }
 
     fn draw(&mut self, ctx: &mut Context) -> GameResult<()> {
-        use specs::Join;
+        // use specs::Join;
+        use specs::RunNow;
         graphics::clear(ctx);
-        let positions = self.world.read_storage::<Position>();
-        for entity in self.world.entities().join() {
-            if let Some(pos) = positions.get(entity) {
-                graphics::circle(ctx, DrawMode::Fill, Point2::new(pos.x, pos.y), 100.0, 2.0)?;
-            }
-        }
+        // let positions = self.world.read_storage::<Position>();
+        // for entity in self.world.entities().join() {
+        //     if let Some(pos) = positions.get(entity) {
+        //         graphics::circle(ctx, DrawMode::Fill, Point2::new(pos.x, pos.y), 100.0, 2.0)?;
+        //     }
+        // }
+        let mut ren = Render;
+        ren.run_now(&self.world.res);
+        let mut thing = self.world.write_resource::<ToBeDrawn>();
+        thing.draw(ctx);
+        thing.clear();
+        // world.to
         graphics::present(ctx);
         Ok(())
     }
 
     fn key_down_event(&mut self, ctx: &mut Context, keycode: Keycode, _keymod: Mod, repeat: bool) {
         let mut input = self.world.write_resource::<PlayerInput>();
-
         if !repeat {
             match keycode {
                 Keycode::A => input.left = true,
@@ -95,8 +103,9 @@ impl<'a, 'b> event::EventHandler for MainState<'a, 'b> {
 
 fn get_images(ctx: &mut Context) -> HashMap<String, graphics::Image> {
     let mut imgs = HashMap::new();
-    let img_name = "Template";
+    let img_name = "/Template.png";
     let img = graphics::Image::new(ctx, img_name).expect(&format!("{}, Not found", img_name));
     imgs.insert(img_name.to_string(), img);
+    // println!("{:?}", imgs);
     return imgs;
 }

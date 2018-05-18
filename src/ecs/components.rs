@@ -43,10 +43,21 @@ impl Component for Controlled {
 
 #[derive(Debug)]
 pub struct Sprite {
-    image_name: String,
-    sprite_index: i32,
-    frames_since_last_draw: i32,
-    animation_rate: i32,
+    pub image_name: String,
+    pub sprite_index: i32,
+    pub frames_since_last_change: i32,
+    pub animation_rate: i32,
+}
+
+impl Sprite {
+    pub fn new(name: String) -> Self {
+        Self {
+            image_name: name,
+            sprite_index: 0,
+            frames_since_last_change: 0,
+            animation_rate: 0,
+        }
+    }
 }
 
 impl Component for Sprite {
