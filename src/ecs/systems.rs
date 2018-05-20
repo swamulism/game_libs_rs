@@ -2,10 +2,15 @@ use ecs::components::*;
 use ecs::resources::*;
 use specs::{Join, Read, ReadStorage, System, Write, WriteStorage};
 
-pub struct UpdatePos;
+/// System for updating a position of an entity
+pub struct UpdatePosSys;
 
-impl<'a> System<'a> for UpdatePos {
-    type SystemData = (ReadStorage<'a, Velocity>, WriteStorage<'a, Position>);
+// Figure out how to add collision check here
+impl<'a> System<'a> for UpdatePosSys {
+    type SystemData = (
+        ReadStorage<'a, VelocityComp>,
+        WriteStorage<'a, PositionComp>,
+    );
 
     fn run(&mut self, (vel, mut pos): Self::SystemData) {
         for (vel, pos) in (&vel, &mut pos).join() {
@@ -15,25 +20,17 @@ impl<'a> System<'a> for UpdatePos {
     }
 }
 
-// struct EnemySpawner;
+/// System for updating velocity based on player input
+pub struct ControlSys;
 
-// impl<'a> System<'a> for EnemySpawner {
-//     type SystemData = Entities<'a>;
-
-//     fn run(&mut self, entities: Entities<'a>) {
-//         let enemy = entities.create();
-//     }
-// }
-
-pub struct Control;
-impl<'a> System<'a> for Control {
+impl<'a> System<'a> for ControlSys {
     type SystemData = (
-        ReadStorage<'a, Controlled>,
-        WriteStorage<'a, Velocity>,
-        Read<'a, PlayerInput>,
+        ReadStorage<'a, ControlledComp>,
+        Read<'a, InputRes>,
+        WriteStorage<'a, VelocityComp>,
     );
 
-    fn run(&mut self, (con, mut vel, inp): Self::SystemData) {
+    fn run(&mut self, (con, inp, mut vel): Self::SystemData) {
         for (_, vel) in (&con, &mut vel).join() {
             if inp.up {
                 vel.y = -5.0;
@@ -53,35 +50,37 @@ impl<'a> System<'a> for Control {
     }
 }
 
-// figure out way to put into buffer
-// perhaps use resource to do this
+/// System for loading sprites into drawing queue
 #[derive(Default)]
-pub struct Render;
-impl<'a> System<'a> for Render {
+pub struct LoadDrawSys;
+
+// figure out way to put into buffer
+impl<'a> System<'a> for LoadDrawSys {
     type SystemData = (
-        ReadStorage<'a, Position>,
-        ReadStorage<'a, Sprite>,
-        Read<'a, Sprites>,
-        Write<'a, ToBeDrawn>,
+        ReadStorage<'a, PositionComp>,
+        ReadStorage<'a, SpriteComp>,
+        Read<'a, SpritesRes>,
+        Write<'a, DrawQueueRes>,
     );
 
-    fn run(&mut self, (pos, spr, sprites, mut tbdrawn): Self::SystemData) {
+    fn run(&mut self, (pos, spr, sprites, mut drawq): Self::SystemData) {
         for (pos, spr) in (&pos, &spr).join() {
             let img = sprites
                 .images
                 .get(&spr.image_name)
                 .expect(&format!("{} not found", spr.image_name));
-            tbdrawn.images.push((img.clone(), pos.x, pos.y));
+            drawq.images.push((img.clone(), pos.x, pos.y));
         }
     }
 }
 
-// pub struct DrawSys;
-// impl<'a> System<'a> for DrawSys {
-//     type SystemData = (Write<'a, ToBeDrawn>);
 
-//     fn run(&mut self, mut tbdrawn: Self::SystemData) {
-//         tbdrawn.draw();
-//         tbdrawn.clear();
+// struct EnemySpawner;
+
+// impl<'a> System<'a> for EnemySpawner {
+//     type SystemData = Entities<'a>;
+
+//     fn run(&mut self, entities: Entities<'a>) {
+//         let enemy = entities.create();
 //     }
 // }

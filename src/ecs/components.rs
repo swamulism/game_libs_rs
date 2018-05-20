@@ -1,31 +1,61 @@
 use specs::{Component, NullStorage, VecStorage};
 
+/// Position of entity
 #[derive(Debug)]
-pub struct Position {
+pub struct PositionComp {
     pub x: f32,
     pub y: f32,
 }
 
-impl Component for Position {
+impl Component for PositionComp {
     type Storage = VecStorage<Self>;
 }
 
+/// Velocity of entity
 #[derive(Debug)]
-pub struct Velocity {
+pub struct VelocityComp {
     pub x: f32,
     pub y: f32,
 }
 
-impl Component for Velocity {
+impl Component for VelocityComp {
     type Storage = VecStorage<Self>;
 }
 
+/// Whether or not entity is controlled by player 
 #[derive(Debug, Default)]
-pub struct Controlled;
+pub struct ControlledComp;
 
-impl Component for Controlled {
+impl Component for ControlledComp {
     type Storage = NullStorage<Self>;
 }
+
+/// Info about sprite that entity has
+#[derive(Debug)]
+pub struct SpriteComp {
+    pub image_name: String,
+    pub sprite_index: i32,
+    pub frames_since_last_change: i32,
+    pub animation_rate: i32,
+}
+
+// Not sure how this component should be structured
+// or what it should store
+impl SpriteComp {
+    pub fn new(name: String) -> Self {
+        Self {
+            image_name: name,
+            sprite_index: 0,
+            frames_since_last_change: 0,
+            animation_rate: 0,
+        }
+    }
+}
+
+impl Component for SpriteComp {
+    type Storage = VecStorage<Self>;
+}
+
 
 // #[derive(Debug)]
 // pub struct Collision {
@@ -38,28 +68,3 @@ impl Component for Controlled {
 // impl Component for Collision {
 //     type Storage = VecStorage<Self>;
 // }
-
-// use ggez::graphics;
-
-#[derive(Debug)]
-pub struct Sprite {
-    pub image_name: String,
-    pub sprite_index: i32,
-    pub frames_since_last_change: i32,
-    pub animation_rate: i32,
-}
-
-impl Sprite {
-    pub fn new(name: String) -> Self {
-        Self {
-            image_name: name,
-            sprite_index: 0,
-            frames_since_last_change: 0,
-            animation_rate: 0,
-        }
-    }
-}
-
-impl Component for Sprite {
-    type Storage = VecStorage<Self>;
-}
