@@ -34,9 +34,6 @@ impl Component for ControlledComp {
 #[derive(Debug)]
 pub struct SpriteComp {
     pub image_name: String,
-    pub sprite_index: i32,
-    pub frames_since_last_change: i32,
-    pub animation_rate: i32,
 }
 
 // Not sure how this component should be structured
@@ -45,9 +42,6 @@ impl SpriteComp {
     pub fn new(name: String) -> Self {
         Self {
             image_name: name,
-            sprite_index: 0,
-            frames_since_last_change: 0,
-            animation_rate: 0,
         }
     }
 }

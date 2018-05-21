@@ -29,7 +29,7 @@ impl<'a, 'b> MainState<'a, 'b> {
             .with(PositionComp { x: 0.0, y: 0.0 })
             .with(VelocityComp { x: 0.0, y: 0.0 })
             .with(ControlledComp)
-            .with(SpriteComp::new("/Template.png".to_string()))
+            .with(SpriteComp::new("/Platino1.png".to_string()))
             .build();
 
         let dispatcher = DispatcherBuilder::new()
@@ -108,7 +108,7 @@ impl<'a, 'b> event::EventHandler for MainState<'a, 'b> {
 /// Generate Hashmap for all images used in game
 fn get_images(ctx: &mut Context) -> HashMap<String, graphics::Image> {
     let mut imgs = HashMap::new();
-    let img_name = "/Template.png";
+    let img_name = "/Platino1.png";
     let img = graphics::Image::new(ctx, img_name).expect(&format!("{}, Not found", img_name));
     imgs.insert(img_name.to_string(), img);
     return imgs;

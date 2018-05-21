@@ -1,8 +1,7 @@
 //! Roguetima
 
 extern crate ggez;
-extern crate noise;
-extern crate rand;
+// extern crate rand;
 extern crate specs;
 
 mod ecs;
