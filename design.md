@@ -1,66 +1,43 @@
 # Rust-ling
-fishing game
+- dev log?
+- make schedule
 
 ## TODO
-<!-- - player
 - controls
-- world (floor tiles, things above e.g. trees walls stations?)
-- collision (collision, hitbox, hurtbox, inventory pickup) -->
+- world (generate water)
+- collision (hook on fish)
 - gameplay (also put shadows under things)
-<!-- - make resource for art -->
 - art :( 
+
+REMOVE ALL THE CLONES AND FIX GRAPHICS CODE
 
 ## Overview 
 
 ### Main Concept
-Fish
+Fishing game
 
 ### World/Environment Theme
-???
+Pond
 
 ### Objective of the Game
-Make money
+Make as much money in 5 mins?
 
 ### Art Style
-<!-- 16x16 pixel art. ENDESGA 32 or DawnBringer 32 Palette.
-
-Tiles and items are 16x16
-
-Creatures are dynamic size -->
-
+16x16 pixel art. ENDESGA 32 or DawnBringer 32 Palette.
 
 ## Mechanics
 - Fish
+- Sell fish for money
 - Upgrade fishing stuff
-- Collect fish
 - Choose place to fish
-- sell fish for money
-- goal is to make as much money in 5 mins?
-- legendary fish?
-- user should learn to control randomness
-- randomness should be fair (cant fish trash 5 times in a row, cant fish same fish 5 times in a row, ...)
+- controlable randomness (randomness should be fair e.g. cant fish same thing 5 times in a row)
+- Gather different bait by walking around the world?
 
 ## Fish
 - Normal
 - Small
 - Large
-- Fire
-- Explosive
-
-<!-- ## Mechanics
-- Move around
-- Pick up items
-- Control base
-
-### World
-- Floating islands?
-- Random dungeons generated around world
-
-### Base
-- Control to move around world
-
-### Conveyor belt / Mine track
-- Put items on to move around
-
-### Items
-- Pick up and bring to base -->
+- Fire?
+- Explosive?
+- Invisible?
+- Legendary fish?

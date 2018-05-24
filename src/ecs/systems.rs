@@ -70,6 +70,14 @@ impl<'a> System<'a> for LoadDrawSys {
                 .get(&spr.image_name)
                 .expect(&format!("{} not found", spr.image_name));
             drawq.images.push((img.clone(), pos.x, pos.y));
+            // draw_ex(
+            //     ctx,
+            //     img,
+            //     DrawParam {
+            //         dest: Point2::new(pos.x, pos.y),
+            //         ..Default::default()
+            //     },
+            // ).expect("error with drawing");
         }
     }
 }

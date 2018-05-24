@@ -39,15 +39,26 @@ impl SpritesRes {
 #[derive(Default)]
 pub struct DrawQueueRes {
     pub images: Vec<(Image, f32, f32)>,
+    pub images_keep: Vec<(Image, f32, f32)>
 }
 
 // Might have to figure out a way to choose drawing order
 // so things that should be drawn on the top get drawn on the top
 impl DrawQueueRes {
     pub fn new() -> Self {
-        Self { images: vec![] }
+        Self { images: vec![], images_keep: vec![] }
     }
     pub fn draw(&mut self, ctx: &mut Context) {
+        for (img, x, y) in &self.images_keep {
+            draw_ex(
+                ctx,
+                img,
+                DrawParam {
+                    dest: Point2::new(*x, *y),
+                    ..Default::default()
+                },
+            ).expect("error with drawing");
+        }
         for (img, x, y) in &self.images {
             draw_ex(
                 ctx,
@@ -59,5 +70,6 @@ impl DrawQueueRes {
             ).expect("error with drawing");
         }
         self.images.clear();
+        // self.images = self.images_keep.clone();
     }
 }

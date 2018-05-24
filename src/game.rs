@@ -1,7 +1,7 @@
 use ecs::components::*;
 use ecs::resources::*;
 use ecs::systems::*;
-use ggez::event::{Keycode, Mod};
+use ggez::event::{Keycode, Mod, MouseButton};
 use ggez::{event, graphics, timer, Context, GameResult};
 use specs::{Dispatcher, DispatcherBuilder, World};
 use std::collections::HashMap;
@@ -46,9 +46,9 @@ impl<'a, 'b> event::EventHandler for MainState<'a, 'b> {
         const DESIRED_UPS: u32 = 60;
 
         // FPS counter
-        if timer::get_ticks(ctx) % 10000 == 0 {
-            println!("FPS: {}", timer::get_fps(ctx));
-        }
+        // if timer::get_ticks(ctx) % 1000 == 0 {
+        //     println!("FPS: {}", timer::get_fps(ctx));
+        // }
 
         // Catch up on updates if fps too low
         while timer::check_update_time(ctx, DESIRED_UPS) {
@@ -86,7 +86,7 @@ impl<'a, 'b> event::EventHandler for MainState<'a, 'b> {
                 Keycode::Escape => {
                     ctx.quit().expect("wat");
                 }
-                _ => (),
+                _ => {},
             }
         }
     }
@@ -99,16 +99,36 @@ impl<'a, 'b> event::EventHandler for MainState<'a, 'b> {
                 Keycode::D => input.right = false,
                 Keycode::W => input.up = false,
                 Keycode::S => input.down = false,
-                _ => (),
+                _ => {},
             }
         }
     }
+
+    fn mouse_button_down_event(&mut self, _ctx: &mut Context, button: MouseButton, x: i32, y: i32) {
+        match button {
+            MouseButton::Left => {
+                let img_name = "/Aquatic0.png";
+                let sprites = self.world.read_resource::<SpritesRes>();
+                let img = sprites.images.get(img_name).expect("error image mdown");
+                let mut drawq = self.world.write_resource::<DrawQueueRes>();
+                drawq.images_keep.push((img.clone(), x as f32, y as f32));
+            }
+            MouseButton::Right => {}
+            _ => {}
+        }
+    }
+
+    // fn mouse_motion_event(&mut self, _ctx: &mut Context, _state: event::MouseState, x: i32, y: i32, _: i32, _: i32) {}
+    // fn mouse_wheel_event(&mut self, _ctx: &mut Context, _: i32, _: i32) {}
 }
 
 /// Generate Hashmap for all images used in game
 fn get_images(ctx: &mut Context) -> HashMap<String, graphics::Image> {
     let mut imgs = HashMap::new();
     let img_name = "/Platino1.png";
+    let img = graphics::Image::new(ctx, img_name).expect(&format!("{}, Not found", img_name));
+    imgs.insert(img_name.to_string(), img);
+    let img_name = "/Aquatic0.png";
     let img = graphics::Image::new(ctx, img_name).expect(&format!("{}, Not found", img_name));
     imgs.insert(img_name.to_string(), img);
     return imgs;
