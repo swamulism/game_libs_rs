@@ -9,6 +9,7 @@ use std::collections::HashMap;
 pub struct MainState<'a, 'b> {
     world: World,
     dispatcher: Dispatcher<'a, 'b>,
+    game_state: GameState,
 }
 
 impl<'a, 'b> MainState<'a, 'b> {
@@ -22,6 +23,7 @@ impl<'a, 'b> MainState<'a, 'b> {
         world.add_resource(InputRes::new());
         world.add_resource(SpritesRes::new(imgs));
         world.add_resource(DrawQueueRes::new());
+        world.add_resource(NoisesRes::new(ctx));
 
         // Creating charactor
         world
@@ -29,14 +31,18 @@ impl<'a, 'b> MainState<'a, 'b> {
             .with(PositionComp { x: 0.0, y: 0.0 })
             .with(VelocityComp { x: 0.0, y: 0.0 })
             .with(ControlledComp)
-            .with(SpriteComp::new("/Platino1.png".to_string()))
+            .with(SpriteComp::new("/thing.png".to_string()))
             .build();
 
         let dispatcher = DispatcherBuilder::new()
             .with(ControlSys, "control", &[])
             .with(UpdatePosSys, "update_pos", &[])
             .build();
-        let s = Self { world, dispatcher };
+        let s = Self {
+            world,
+            dispatcher,
+            game_state: GameState::Normal,
+        };
         Ok(s)
     }
 }
@@ -63,12 +69,20 @@ impl<'a, 'b> event::EventHandler for MainState<'a, 'b> {
         // Clear screen
         graphics::clear(ctx);
 
-        // Load data into DrawQueueRes
-        LoadDrawSys.run_now(&self.world.res);
+        match self.game_state {
+            GameState::Normal => {
+                // Load data into DrawQueueRes
+                LoadDrawSys.run_now(&self.world.res);
 
-        // Draw stuff in queue
-        let mut drawq = self.world.write_resource::<DrawQueueRes>();
-        drawq.draw(ctx);
+                // Draw stuff in queue
+                let mut drawq = self.world.write_resource::<DrawQueueRes>();
+                drawq.draw(ctx);
+            }
+            GameState::Noise => {
+                let mut noises = self.world.read_resource::<NoisesRes>();
+                noises.draw(ctx);
+            }
+        }
 
         // Put things on screen
         graphics::present(ctx);
@@ -83,10 +97,30 @@ impl<'a, 'b> event::EventHandler for MainState<'a, 'b> {
                 Keycode::D => input.right = true,
                 Keycode::W => input.up = true,
                 Keycode::S => input.down = true,
+                Keycode::Left => {
+                    let mut noises = self.world.write_resource::<NoisesRes>();
+                    noises.prev();
+                }
+                Keycode::Right => {
+                    let mut noises = self.world.write_resource::<NoisesRes>();
+                    noises.next();
+                }
+                Keycode::Return => {
+                    let mut noises = self.world.write_resource::<NoisesRes>();
+                    noises.regen(ctx);
+                }
+                Keycode::Space => match self.game_state {
+                    GameState::Normal => {
+                        self.game_state = GameState::Noise;
+                    }
+                    GameState::Noise => {
+                        self.game_state = GameState::Normal;
+                    }
+                },
                 Keycode::Escape => {
                     ctx.quit().expect("wat");
                 }
-                _ => {},
+                _ => {}
             }
         }
     }
@@ -99,7 +133,7 @@ impl<'a, 'b> event::EventHandler for MainState<'a, 'b> {
                 Keycode::D => input.right = false,
                 Keycode::W => input.up = false,
                 Keycode::S => input.down = false,
-                _ => {},
+                _ => {}
             }
         }
     }
@@ -107,7 +141,7 @@ impl<'a, 'b> event::EventHandler for MainState<'a, 'b> {
     fn mouse_button_down_event(&mut self, _ctx: &mut Context, button: MouseButton, x: i32, y: i32) {
         match button {
             MouseButton::Left => {
-                let img_name = "/Aquatic0.png";
+                let img_name = "/wut.png";
                 let sprites = self.world.read_resource::<SpritesRes>();
                 let img = sprites.images.get(img_name).expect("error image mdown");
                 let mut drawq = self.world.write_resource::<DrawQueueRes>();
@@ -125,11 +159,16 @@ impl<'a, 'b> event::EventHandler for MainState<'a, 'b> {
 /// Generate Hashmap for all images used in game
 fn get_images(ctx: &mut Context) -> HashMap<String, graphics::Image> {
     let mut imgs = HashMap::new();
-    let img_name = "/Platino1.png";
+    let img_name = "/thing.png";
     let img = graphics::Image::new(ctx, img_name).expect(&format!("{}, Not found", img_name));
     imgs.insert(img_name.to_string(), img);
-    let img_name = "/Aquatic0.png";
+    let img_name = "/wut.png";
     let img = graphics::Image::new(ctx, img_name).expect(&format!("{}, Not found", img_name));
     imgs.insert(img_name.to_string(), img);
     return imgs;
+}
+
+enum GameState {
+    Normal,
+    Noise,
 }

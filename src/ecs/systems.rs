@@ -51,7 +51,6 @@ impl<'a> System<'a> for ControlSys {
 }
 
 /// System for loading sprites into drawing queue
-#[derive(Default)]
 pub struct LoadDrawSys;
 
 // figure out way to put into buffer
@@ -70,25 +69,6 @@ impl<'a> System<'a> for LoadDrawSys {
                 .get(&spr.image_name)
                 .expect(&format!("{} not found", spr.image_name));
             drawq.images.push((img.clone(), pos.x, pos.y));
-            // draw_ex(
-            //     ctx,
-            //     img,
-            //     DrawParam {
-            //         dest: Point2::new(pos.x, pos.y),
-            //         ..Default::default()
-            //     },
-            // ).expect("error with drawing");
         }
     }
 }
-
-
-// struct EnemySpawner;
-
-// impl<'a> System<'a> for EnemySpawner {
-//     type SystemData = Entities<'a>;
-
-//     fn run(&mut self, entities: Entities<'a>) {
-//         let enemy = entities.create();
-//     }
-// }

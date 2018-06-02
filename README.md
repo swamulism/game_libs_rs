@@ -9,8 +9,12 @@ The following command can be used to compile & run:
 cargo run --release
 ```
 
+## Controls
+- W/A/S/D: move charactor around
+- Mouse click on screen: Put a sprite on screen
+- Space: Switch to render noise mode
+- Left/Right: Switch type of noise being rendered
+- Enter: Regenerate noise
 
-## Built With
-
-- [Rust](https://www.rust-lang.org/en-US/) - Programming language
-- [ggez](https://github.com/ggez/ggez) - Game Engine
+## TODO
+- [ ] Make noise name appear on screen

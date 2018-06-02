@@ -1,11 +1,13 @@
-//! Roguetima
+//! Game libs
 
 extern crate ggez;
-// extern crate rand;
+extern crate noise;
+extern crate rand;
 extern crate specs;
 
 mod ecs;
 mod game;
+mod pcg;
 
 use game::MainState;
 use ggez::{event, graphics};

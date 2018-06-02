@@ -1,10 +1,11 @@
 [package]
-name = "roguetima"
+name = "game_libs"
 version = "0.0.0"
 authors = ["Samuel"]
 build = "build.rs"
 
 [dependencies]
 ggez = "0.4.2"
-specs = "0.11.0"
+specs = "0.11.2"
 rand = "0.5.0"
+noise = "0.5.1"
