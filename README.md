@@ -14,7 +14,7 @@ cargo run --release
 - Mouse click on screen: Put a sprite on screen
 - Space: Switch to render noise mode
 - Left/Right: Switch type of noise being rendered
-- Enter: Regenerate noise
+- Enter: Generate new noise
 
 ## TODO
 - [ ] Make noise name appear on screen
