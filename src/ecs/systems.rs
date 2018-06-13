@@ -53,36 +53,16 @@ impl<'a> System<'a> for ControlSys {
 /// System for loading sprites into drawing queue
 pub struct LoadDrawSys;
 
-// figure out way to put into buffer
 impl<'a> System<'a> for LoadDrawSys {
     type SystemData = (
         ReadStorage<'a, PositionComp>,
         ReadStorage<'a, SpriteComp>,
-        Read<'a, SpritesRes>,
-        Write<'a, DrawQueueRes>,
+        Write<'a, SpritesRes>,
     );
 
-    fn run(&mut self, (pos, spr, sprites, mut drawq): Self::SystemData) {
+    fn run(&mut self, (pos, spr, mut sprites): Self::SystemData) {
         for (pos, spr) in (&pos, &spr).join() {
-            let img = sprites
-                .images
-                .get(&spr.image_name)
-                .expect(&format!("{} not found", spr.image_name));
-            drawq.images.push((img.clone(), pos.x, pos.y));
+            sprites.push((spr.image_name.clone(), pos.x, pos.y));
         }
     }
 }
-
-// impl<'a> System<'a> for LoadDrawSys {
-//     type SystemData = (
-//         ReadStorage<'a, PositionComp>,
-//         ReadStorage<'a, SpriteComp>,
-//         Write<'a, SpritesRes>,
-//     );
-
-//     fn run(&mut self, (pos, spr, mut sprites): Self::SystemData) {
-//         for (pos, spr) in (&pos, &spr).join() {
-//             sprites.push((spr.clone(), pos.x, pos.y));
-//         }
-//     }
-// }

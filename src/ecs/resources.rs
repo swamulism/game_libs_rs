@@ -25,35 +25,37 @@ impl InputRes {
 
 /// Used to store all images used in game
 /// Uses flyweight pattern (hopefully)
+/// also used to draw things to screen
 #[derive(Default)]
 pub struct SpritesRes {
-    pub images: HashMap<String, Image>,
+    images: HashMap<String, Image>,
+    draw_queue: Vec<(String, f32, f32)>,
+    draw_queue_keep: Vec<(String, f32, f32)>,
 }
 
+// figure out how to implement drawing order
 impl SpritesRes {
     pub fn new(images: HashMap<String, Image>) -> Self {
-        Self { images: images }
-    }
-}
-
-/// Queue for drawing images in game every frame
-#[derive(Default)]
-pub struct DrawQueueRes {
-    pub images: Vec<(Image, f32, f32)>,
-    pub images_keep: Vec<(Image, f32, f32)>,
-}
-
-// Might have to figure out a way to choose drawing order
-// so things that should be drawn on the top get drawn on the top
-impl DrawQueueRes {
-    pub fn new() -> Self {
         Self {
-            images: vec![],
-            images_keep: vec![],
+            images: images,
+            draw_queue: vec![],
+            draw_queue_keep: vec![],
         }
     }
+
+    pub fn push(&mut self, img_info: (String, f32, f32)) {
+        self.draw_queue.push(img_info)
+    }
+
+    pub fn push_keep(&mut self, img_info: (String, f32, f32)) {
+        self.draw_queue_keep.push(img_info)
+    }
+
     pub fn draw(&mut self, ctx: &mut Context) {
-        for (img, x, y) in &self.images_keep {
+        for (img_name, x, y) in &self.draw_queue_keep {
+            let img = self.images
+                .get(img_name)
+                .expect(&format!("{} image not found", img_name));
             draw_ex(
                 ctx,
                 img,
@@ -63,7 +65,10 @@ impl DrawQueueRes {
                 },
             ).expect("error with drawing");
         }
-        for (img, x, y) in &self.images {
+        for (img_name, x, y) in &self.draw_queue {
+            let img = self.images
+                .get(img_name)
+                .expect(&format!("{} image not found", img_name));
             draw_ex(
                 ctx,
                 img,
@@ -73,48 +78,9 @@ impl DrawQueueRes {
                 },
             ).expect("error with drawing");
         }
-        self.images.clear();
+        self.draw_queue.clear();
     }
 }
-
-// /// Used to store all images used in game
-// /// Uses flyweight pattern (hopefully)
-// /// also used to draw things to screen
-// #[derive(Default)]
-// pub struct SpritesRes {
-//     images: HashMap<String, Image>,
-//     draw_queue: Vec<(String, f32, f32)>,
-// }
-
-// // figure out how to implement drawing order
-// impl SpritesRes {
-//     pub fn new(images: HashMap<String, Image>) -> Self {
-//         Self {
-//             images: images,
-//             draw_queue: vec![],
-//         }
-//     }
-
-//     pub fn push(&mut self, img_name: String) {
-//         self.draw_queue.push(img_name)
-//     }
-
-//     pub fn draw(&mut self, ctx: &mut Context) {
-//         for (img_name, x, y) in &self.images {
-//             let img = self.images
-//                 .get(img_name)
-//                 .expect(&format!("{} image not found", img_name));
-//             draw_ex(
-//                 ctx,
-//                 img,
-//                 DrawParam {
-//                     dest: Point2::new(*x, *y),
-//                     ..Default::default()
-//                 },
-//             ).expect("error with drawing");
-//         }
-//     }
-// }
 
 const SQUARE_SIZE: f32 = 5.0;
 

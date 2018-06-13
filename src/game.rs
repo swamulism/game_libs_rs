@@ -22,7 +22,6 @@ impl<'a, 'b> MainState<'a, 'b> {
         world.register::<SpriteComp>();
         world.add_resource(InputRes::new());
         world.add_resource(SpritesRes::new(imgs));
-        world.add_resource(DrawQueueRes::new());
         world.add_resource(NoisesRes::new(ctx));
 
         // Creating charactor
@@ -51,11 +50,6 @@ impl<'a, 'b> event::EventHandler for MainState<'a, 'b> {
     fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
         const DESIRED_UPS: u32 = 60;
 
-        // FPS counter
-        // if timer::get_ticks(ctx) % 1000 == 0 {
-        //     println!("FPS: {}", timer::get_fps(ctx));
-        // }
-
         // Catch up on updates if fps too low
         while timer::check_update_time(ctx, DESIRED_UPS) {
             self.dispatcher.dispatch(&mut self.world.res);
@@ -75,7 +69,7 @@ impl<'a, 'b> event::EventHandler for MainState<'a, 'b> {
                 LoadDrawSys.run_now(&self.world.res);
 
                 // Draw stuff in queue
-                let mut drawq = self.world.write_resource::<DrawQueueRes>();
+                let mut drawq = self.world.write_resource::<SpritesRes>();
                 drawq.draw(ctx);
             }
             GameState::Noise => {
@@ -141,30 +135,24 @@ impl<'a, 'b> event::EventHandler for MainState<'a, 'b> {
     fn mouse_button_down_event(&mut self, _ctx: &mut Context, button: MouseButton, x: i32, y: i32) {
         match button {
             MouseButton::Left => {
-                let img_name = "/wut.png";
-                let sprites = self.world.read_resource::<SpritesRes>();
-                let img = sprites.images.get(img_name).expect("error image mdown");
-                let mut drawq = self.world.write_resource::<DrawQueueRes>();
-                drawq.images_keep.push((img.clone(), x as f32, y as f32));
+                let img_name = "/wut.png".to_string();
+                let mut drawq = self.world.write_resource::<SpritesRes>();
+                drawq.push_keep((img_name, x as f32, y as f32));
             }
             MouseButton::Right => {}
             _ => {}
         }
     }
-
-    // fn mouse_motion_event(&mut self, _ctx: &mut Context, _state: event::MouseState, x: i32, y: i32, _: i32, _: i32) {}
-    // fn mouse_wheel_event(&mut self, _ctx: &mut Context, _: i32, _: i32) {}
 }
 
 /// Generate Hashmap for all images used in game
 fn get_images(ctx: &mut Context) -> HashMap<String, graphics::Image> {
+    let img_names = ["/thing.png", "/wut.png"];
     let mut imgs = HashMap::new();
-    let img_name = "/thing.png";
-    let img = graphics::Image::new(ctx, img_name).expect(&format!("{}, Not found", img_name));
-    imgs.insert(img_name.to_string(), img);
-    let img_name = "/wut.png";
-    let img = graphics::Image::new(ctx, img_name).expect(&format!("{}, Not found", img_name));
-    imgs.insert(img_name.to_string(), img);
+    for img_name in img_names.iter() {
+        let img = graphics::Image::new(ctx, img_name).expect(&format!("{}, Not found", img_name));
+        imgs.insert(img_name.to_string(), img);
+    }
     return imgs;
 }
 
