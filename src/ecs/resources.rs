@@ -77,6 +77,45 @@ impl DrawQueueRes {
     }
 }
 
+// /// Used to store all images used in game
+// /// Uses flyweight pattern (hopefully)
+// /// also used to draw things to screen
+// #[derive(Default)]
+// pub struct SpritesRes {
+//     images: HashMap<String, Image>,
+//     draw_queue: Vec<(String, f32, f32)>,
+// }
+
+// // figure out how to implement drawing order
+// impl SpritesRes {
+//     pub fn new(images: HashMap<String, Image>) -> Self {
+//         Self {
+//             images: images,
+//             draw_queue: vec![],
+//         }
+//     }
+
+//     pub fn push(&mut self, img_name: String) {
+//         self.draw_queue.push(img_name)
+//     }
+
+//     pub fn draw(&mut self, ctx: &mut Context) {
+//         for (img_name, x, y) in &self.images {
+//             let img = self.images
+//                 .get(img_name)
+//                 .expect(&format!("{} image not found", img_name));
+//             draw_ex(
+//                 ctx,
+//                 img,
+//                 DrawParam {
+//                     dest: Point2::new(*x, *y),
+//                     ..Default::default()
+//                 },
+//             ).expect("error with drawing");
+//         }
+//     }
+// }
+
 const SQUARE_SIZE: f32 = 5.0;
 
 pub struct NoisesRes {

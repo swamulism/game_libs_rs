@@ -118,7 +118,7 @@ impl<'a, 'b> event::EventHandler for MainState<'a, 'b> {
                     }
                 },
                 Keycode::Escape => {
-                    ctx.quit().expect("wat");
+                    ctx.quit().expect("Error quitting?");
                 }
                 _ => {}
             }

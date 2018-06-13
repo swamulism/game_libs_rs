@@ -72,3 +72,17 @@ impl<'a> System<'a> for LoadDrawSys {
         }
     }
 }
+
+// impl<'a> System<'a> for LoadDrawSys {
+//     type SystemData = (
+//         ReadStorage<'a, PositionComp>,
+//         ReadStorage<'a, SpriteComp>,
+//         Write<'a, SpritesRes>,
+//     );
+
+//     fn run(&mut self, (pos, spr, mut sprites): Self::SystemData) {
+//         for (pos, spr) in (&pos, &spr).join() {
+//             sprites.push((spr.clone(), pos.x, pos.y));
+//         }
+//     }
+// }
